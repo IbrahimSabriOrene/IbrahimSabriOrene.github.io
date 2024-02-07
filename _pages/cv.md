@@ -50,7 +50,7 @@ Talks
   
 Teaching
 ======
-  <ul>{% for post in site.teaching %}
+  <ul>{% for post in site.home %}
     {% include archive-single-cv.html %}
   {% endfor %}</ul>
   
