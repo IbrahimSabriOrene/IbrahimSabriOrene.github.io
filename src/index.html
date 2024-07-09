@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Navigation Bar</title>
+	<style>
+		/* reset styles */
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		/* navigation bar styles */
+		nav {
+			background-color: black;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 1rem 2rem;
+		}
+
+		nav ul {
+			display: flex;
+			list-style: none;
+		}
+
+		nav li {
+			margin-right: 2rem;
+		}
+
+		nav li a {
+			text-decoration: none;
+			color: white;
+			font-weight: bold;
+			padding: 0.5rem 1rem;
+		}
+
+		/* hover effects */
+		nav li a:hover {
+			background-color: #ff0000;
+			color: black;
+			transition: 0.3s ease-in-out;
+		}
+	</style>
+</head>
+
+<body>
+	<nav>
+		<ul>
+			<li><a href="#">Home</a></li>
+			<li><a href="#">About Me</a></li>
+			<li><a href="#">Contact</a></li>
+			<li><a href="#">CV</a></li>
+		</ul>
+	</nav>
+</body>
+
+</html>
