@@ -16,3 +16,5 @@ Contact                      GitHub / LinkedIn
 ```
 
 Critique: fake live terminals, generic counters and network particles would add decoration without explaining the work. Use a labeled illustrative workflow and honest prototype descriptions instead. Static HTML, CSS and a small script are sufficient. No private company project names or private source files are published.
+
+The work gallery links reviewed public source repositories. Project covers are labeled illustrations. The audio-project image is a real local interface capture using synthetic data, with the demo limitation visible both on the image and in its caption. Hobby and desktop work sits below the agent/MCP work. Images are lazy-loaded, retain their full content and open at full size.
