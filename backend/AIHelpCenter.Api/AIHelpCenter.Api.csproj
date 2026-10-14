@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.23" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.10" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.14" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.15.2" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.2" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1" />
+    <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="10.0.5" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AIHelpCenter.Ingestion\AIHelpCenter.Ingestion.csproj" />
+    <ProjectReference Include="..\AIHelpCenter.Intelligence\AIHelpCenter.Intelligence.csproj" />
+    <ProjectReference Include="..\AIHelpCenter.Knowledge\AIHelpCenter.Knowledge.csproj" />
+  </ItemGroup>
+
+</Project>

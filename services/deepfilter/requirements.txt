@@ -1,0 +1,7 @@
+torch<2.9
+torchaudio<2.9
+deepfilternet
+soundfile
+fastapi
+uvicorn
+python-multipart

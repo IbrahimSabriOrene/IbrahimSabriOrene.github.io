@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-sans: 'IBM Plex Sans', sans-serif;
+
+    --bg-base: 220 14% 7%;
+    --bg-surface: 220 12% 9%;
+    --bg-raised: 216 14% 11%;
+    --border-dim: 215 18% 16%;
+    --border-mid: 213 20% 22%;
+
+    --text-primary: 33 18% 90%;
+    --text-secondary: 218 8% 46%;
+    --text-dim: 210 15% 29%;
+
+    --electric: 213 100% 65%;
+    --positive: 155 54% 40%;
+    --warn: 33 72% 46%;
+    --critical: 0 54% 52%;
+
+    /* Shadcn mappings */
+    --background: var(--bg-base);
+    --foreground: var(--text-primary);
+    --card: var(--bg-surface);
+    --card-foreground: var(--text-primary);
+    --popover: var(--bg-raised);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--electric);
+    --primary-foreground: 220 14% 7%;
+    --secondary: var(--bg-raised);
+    --secondary-foreground: var(--text-primary);
+    --muted: var(--bg-raised);
+    --muted-foreground: var(--text-secondary);
+    --accent: var(--electric);
+    --accent-foreground: 220 14% 7%;
+    --destructive: var(--critical);
+    --destructive-foreground: var(--text-primary);
+    --border: var(--border-dim);
+    --input: var(--border-dim);
+    --ring: var(--electric);
+    --radius: 2px;
+
+    --sidebar-background: var(--bg-base);
+    --sidebar-foreground: var(--text-secondary);
+    --sidebar-primary: var(--electric);
+    --sidebar-primary-foreground: var(--text-primary);
+    --sidebar-accent: var(--bg-raised);
+    --sidebar-accent-foreground: var(--text-primary);
+    --sidebar-border: var(--border-dim);
+    --sidebar-ring: var(--electric);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+}
+
+/* Utility: section label */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsl(var(--text-secondary));
+}
+
+/* Scrollbar */
+.scroll-thin::-webkit-scrollbar { width: 4px; }
+.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+.scroll-thin::-webkit-scrollbar-thumb { background: hsl(var(--border-dim)); }
+.scroll-thin::-webkit-scrollbar-thumb:hover { background: hsl(var(--border-mid)); }
+
+/* Progress bar — electric stripe */
+@keyframes stripe-move {
+  0% { background-position: 0 0; }
+  100% { background-position: 20px 0; }
+}
+.progress-stripe {
+  background: repeating-linear-gradient(
+    -45deg,
+    hsl(var(--electric)),
+    hsl(var(--electric)) 4px,
+    hsl(var(--electric) / 0.6) 4px,
+    hsl(var(--electric) / 0.6) 8px
+  );
+  background-size: 20px 20px;
+  animation: stripe-move 0.6s linear infinite;
+}
+
+/* Pulsing dot */
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.dot-pulse {
+  animation: dot-pulse 1.6s ease-in-out infinite;
+}
+
+/* Status pulse */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.status-pulse {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+/* Message slide in */
+@keyframes msg-slide-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.msg-animate {
+  animation: msg-slide-in 0.2s ease-out forwards;
+}
+
+/* Skeleton */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, hsl(var(--bg-raised)) 25%, hsl(var(--border-dim)) 50%, hsl(var(--bg-raised)) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* Typing dots */
+.typing-dot { animation: dot-pulse 1.4s ease-in-out infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Focus ring — no glow, just border */
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 1px solid hsl(var(--electric));
+  outline-offset: 1px;
+}

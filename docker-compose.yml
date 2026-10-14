@@ -1,0 +1,129 @@
+version: "3.4"
+
+services:
+  # Local AI Engine
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama_storage:/root/.ollama
+
+  # Vector Database
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:latest
+    ports:
+      - 9080:8080
+      - 50052:50051
+    restart: on-failure
+    volumes:
+      - ./weaviate_storage:/var/lib/weaviate
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
+      DEFAULT_VECTORIZER_MODULE: "text2vec-ollama"
+      ENABLE_MODULES: "text2vec-ollama,generative-ollama"
+      OLLAMA_API_ENDPOINT: "http://ollama:11434"
+      CLUSTER_HOSTNAME: "node1"
+    depends_on:
+      - ollama
+
+  # Faster-Whisper Server
+  whisper:
+    image: ghcr.io/speaches-ai/speaches:latest-cpu
+    container_name: whisper
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./hf-cache:/home/ubuntu/.cache/huggingface/hub
+      - ./audio_inbox:/app/audio
+    restart: unless-stopped
+
+  # Object Storage (S3 Compatible)
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio_storage:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_NOTIFY_REDIS_ENABLE_PRIMARY: "on"
+      MINIO_NOTIFY_REDIS_ADDRESS_PRIMARY: "redis:6379"
+      MINIO_NOTIFY_REDIS_KEY_PRIMARY: "minio-events"
+      MINIO_NOTIFY_REDIS_FORMAT_PRIMARY: "access"
+      MINIO_NOTIFY_REDIS_QUEUE_DIR_PRIMARY: "/data/.minio-events"
+    command: server /data --console-address ":9001"
+    depends_on:
+      - redis
+
+  # Semantic Cache & Background Jobs
+  redis:
+    image: redis:7.0-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_data:/data
+
+  # Persistent Storage for Hangfire
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ai_help_center
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  # ── Audio Pre-processing (profile: audio) ────────────────────────────────
+  # Enable with: docker compose --profile audio up
+  # Or set COMPOSE_PROFILES=audio in .env for automatic inclusion.
+
+  deepfilter:
+    profiles: ["audio"]
+    build: ./services/deepfilter
+    container_name: deepfilter
+    labels:
+      - "aihelpcenter.group=audio-preprocessing"
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./audio_processor_models:/app/models
+      - shared_audio:/shared-audio
+    restart: unless-stopped
+
+  # ── DIARIZER SERVICE — INACTIVE ──────────────────────────────────────────
+  # Speaker diarization via Pyannote.audio has been disabled.
+  # Reason: Pyannote requires a dedicated GPU (VRAM ≥ 8 GB) to run at any
+  # practical speed. On CPU it can take 10-30× real-time, making it
+  # completely unusable for production workloads without a GPU appliance.
+  #
+  # To re-enable in the future:
+  #   1. Provision a machine with a CUDA-capable GPU.
+  #   2. Uncomment the block below and add HF_TOKEN to your .env file.
+  #   3. Re-enable step 3 in AudioPipelineJob.cs and the HTTP client in
+  #      DependencyInjection.cs.
+  # ─────────────────────────────────────────────────────────────────────────
+  # diarizer:
+  #   profiles: ["audio"]
+  #   build: ./services/diarizer
+  #   container_name: diarizer
+  #   labels:
+  #     - "aihelpcenter.group=audio-preprocessing"
+  #   ports:
+  #     - "8003:8000"
+  #   environment:
+  #     - HF_TOKEN=${HF_TOKEN}
+  #   volumes:
+  #     - ./audio_processor_models:/app/models
+  #     - shared_audio:/shared-audio
+  #   restart: unless-stopped
+
+volumes:
+  shared_audio:
